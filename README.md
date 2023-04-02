@@ -14,33 +14,57 @@
 | :------ | :------------- | :--------------------------------------------- | :------------ |
 | 1.0     | April 01, 2023 | [Idogwu Chinonso](https://github.com/Nonnyjoe) | Final Release |
 
+## Table of contents
+
+- <a href="#dsds"> 1. INTRODUCTION</a>
+  - <a href="#Disclaim"> 1.1 Disclaimer</a>
+  - <a href="#About"> 1.2 About Me </a>
+  - <a href="#Skills"> 1.3 Skills</a>
+  - <a href="#links"> 1.4 Link</a>
+  - <a href="#Ppc"> 1.5 PancakeSwap Prediction contract</a>
+  - <a href="#scope"> 1.6 Scope</a>
+  - <a href="#roles"> 1.7 Roles</a>
+  - <a href="#overview"> 1.8 System Overview</a>
+- <a href="#review"> 2.0 CONTRACT REVIEW</a>
+- <a href="#findings"> 3.0 FINDINGS</a>
+  - <a href="#summary"> 3.1 Summary</a>
+  - <a href="#Qanalysis"> 3.2 Qualitative Analysis</a>
+  - <a href="#keyF"> 3.3 Key Findings</a>
+- <a href="#Dresult"> 4.0 DETAILED RESULT</a>
+  - <a href="#dr1"> 4.1 Missing address(0) check in constructor</a>
+  - <a href="#dr2"> 4.2 Function claim() reverts without a specific pointer</a>
+  - <a href="#dr3"> 4.3 BetBull/ BetBear Epoch errors could be more specific</a>
+  - <a href="#dr4"> 4.4 Redundant State/ code removal in BetBear/BetBull</a>
+  - <a href="#dr5"> 4.5 Redundant State/ code removal in Claim() function </a>
+- <a href="#conclusion"> 5.0 CONCLUSION</a>
+
 <h2 id="dsds">1.0 INTRODUCTION </h2>
 
-### 1.1 Disclaimer
+### <h3 id="Disclaim"> 1.1 Disclaimer <h3>
 
 The smart contract audit I carried out is based on the information provided to me and my expertise in the field. It is not a guarantee of the security or functionality of the smart contract, and it does not eliminate all potential risks. Cryptocurrency investments come with inherent risks, and I am not liable for any financial losses that may occur as a result of investing in a smart contract or any other cryptocurrency-related activities. Investors are advised to do their own research and due diligence before making any investment decisions.
 
-### 1.2 🚀 About Me
+### <h3 id="About"> 1.2 🚀 About Me <h3>
 
 Hello, my name is Idogwu Chinonso and I am a Smart Contract Developer. Currently, I'm interning at Web3bridge where I am working to expand my knowledge and skills in the field of blockchain development.
 
 As a developer, I am passionate about creating secure and efficient smart contracts that can help revolutionize the way we interact with technology. I am constantly learning and exploring new technologies.
 
-### 1.3 🛠 Skills
+### <h3 id="Skills"> 1.3 🛠 Skills <h3>
 
 Solidity, Diamond standard implementation, Foundry, Hardhat, Wagmi, Ethers.Js library, Javascript, HTML, CSS ...
 
-### 1.4 🔗 Links
+### <h3 id="links"> 1.4 🔗 Links <h3>
 
 [![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://nonnyjoe.github.io/my-portfolio/)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/idogwu-chinonso-a9117b1a3/)
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/ChinonsoIdogwu)
 
-### 1.5 PancakeSwap Prediction contract
+### <h3 id="Ppc"> 1.5 PancakeSwap Prediction contract <h3>
 
 Pancakeswap Prediction is a decentralized application (dApp) built on the Binance Smart Chain (BSC) that allows users to predict the possible price change of tokens(BNB and CAKE) and earn rewards for their accurate predictions. Users must connect their BSC wallet to the platform, Stake Binance Coin (BNB) or Pancake token (CAKE) to make prediction, and earn a reward in BNB or CAKE if their prediction turns out to be correct.
 
-### 1.6 Scope
+### <h3 id="scope"> 1.6 Scope <h3>
 
 _(**Table: 1.6**: PancakeSwap Prediction V2 Audit Scope)_
 | Files in scope | SLOC |
@@ -56,7 +80,7 @@ _(**Table: 1.6**: PancakeSwap Prediction V2 Audit Scope)_
 | `SafeERC20.sol` | `116` |
 | `AggregatorV3Interface.sol` | `32` |
 
-### 1.7 Roles
+### <h3 id="roles"> 1.7 Roles <h3>
 
 - #### Operator
 
@@ -80,7 +104,7 @@ _(**Table: 1.6**: PancakeSwap Prediction V2 Audit Scope)_
   - Call the getuserRounds function to display a list of all rounds the user participated in.
   - call the getUserRoundsLength function to get the number of rounds a user participated in.
 
-### 1.8 System Overview
+### <h3 id="overview"> 1.8 System Overview <h3>
 
 - #### PancakePredictionV3.sol
 
@@ -99,7 +123,7 @@ _(**Table: 1.6**: PancakeSwap Prediction V2 Audit Scope)_
 - #### AggregatorV3Interface.sol.
   - This is an interface for Chainlink's price feed oracle, which provides real-time price data for various assets.
 
-## 2.0 CONTRACT REVIEW
+### <h3 id="review"> 2.0 CONTRACT REVIEW <h3>
 
 The following functions are part of the pancakeSwap prediction contract and are all carefully and thoroghly intertwined for optimum performance.
 
@@ -240,9 +264,9 @@ Users can withdraw their winnings by calling the claim function, which transfers
 There are also several internal functions that are used to manage the rounds and ensure that bets can only be placed during certain time periods. These functions include \_bettable, \_safeLockRound, \_safeStartRound, and \_startRound.
 The contract also includes some additional features, such as the ability to cancel a round and a check to ensure that a user is not a contract.
 
-## 3.0 FINDINGS
+<h2 id="findings">3.0 FINDINGS </h2>
 
-### 3.1 Summary
+### <h3 id="summary"> 3.1 Summary <h3>
 
 _(**Table: 3.1**: PancakeSwap Prediction V2 Summary of Findings)_
 | Severeity | Number of Findings |
@@ -254,7 +278,7 @@ _(**Table: 3.1**: PancakeSwap Prediction V2 Summary of Findings)_
 | Undetermined| 0 |
 | Total| 5 |
 
-### 3.2 Qualitative Analysis
+### <h3 id="Qanalysis"> 3.2 Qualitative Analysis<h3>
 
 _(**Table: 3.2**: PancakeSwap Prediction V2 Qualitative Analysis)_
 | Metric | Rating | Comment |
@@ -263,7 +287,7 @@ _(**Table: 3.2**: PancakeSwap Prediction V2 Qualitative Analysis)_
 | Documentation | Moderate | Documentation could be improved |
 | Best Practices | Moderate | Some best practices were implemented but also found lacking in certain areas |
 
-### 3.3 Key Findings
+### <h3 id="keyF">3.3 Key Findings<h3>
 
 Overall, these smart contracts are well-designed and engineered, though the implementation can be
 improved by resolving the identified issues (shown in Table 3.3), including 1 Medium-severity vulnerability,
@@ -278,9 +302,9 @@ _(**Table: 3.3**: PancakeSwap Prediction V2 Audit Key Findings)_
 | `IN-003` | `Informational` | Redundant State/ code removal in BetBear/BetBull | `Coding Practice` |
 | `IN-004` | `Informational` | Redundant State/ code removal in Claim() function | `Coding Practice` |
 
-## 4.0 DETAILED RESULT
+<h2 id="Dresult">4.0 DETAILED RESULT</h2>
 
-### 4.1 Missing address(0) check in constructor
+### <h3 id="dr1"> 4.1 Missing address(0) check in constructor <h3>
 
 |                                 |                               |                               |
 | :------------------------------ | :---------------------------- | :---------------------------- |
@@ -297,7 +321,7 @@ In the pancakeSwap PredictionV2 prediction contract, there is a missing zero-add
 
 Checks to ensure that the address field is not empty or specified as address zero should be implemented.
 
-### 4.2 Function claim() reverts without a specific pointer
+### <h3 id="dr2"> 4.2 Function claim() reverts without a specific pointer<h3>
 
 |                                 |                               |                             |
 | :------------------------------ | :---------------------------- | :-------------------------- |
@@ -328,7 +352,7 @@ Replace revert with a more specific custom error. eg:
 }
 ```
 
-### 4.3 BetBull/ BetBear Epoch errors could be more specific
+### <h3 id="dr3"> 4.3 BetBull/ BetBear Epoch errors could be more specific<h3>
 
 |                                 |                               |                             |
 | :------------------------------ | :---------------------------- | :-------------------------- |
@@ -351,7 +375,7 @@ if (epoch > currentEpoch), revert ("too early");
 if (epoch < currentEpoch), revert ("too late");
 ```
 
-### 4.4 Redundant State/ code removal in BetBear/BetBull
+### <h3 id="dr4"> 4.4 Redundant State/ code removal in BetBear/BetBull<h3>
 
 |                                 |                               |                             |
 | :------------------------------ | :---------------------------- | :-------------------------- |
@@ -369,7 +393,7 @@ In the pancakeSwap PredictionV2 prediction contract, the betBear() and betBull()
 
 Collaps the identified lines into a function and call the function from the two functions (betBull & betBear).
 
-### 4.5 Redundant State/ code removal in Claim() function
+### <h3 id="dr5"> 4.5 Redundant State/ code removal in Claim() function<h3>
 
 |                                 |                               |                             |
 | :------------------------------ | :---------------------------- | :-------------------------- |
@@ -386,7 +410,7 @@ In the pancakeSwap PredictionV2 prediction contract, the claim() function in lin
 
 Remove the redundant if check from the claim function.
 
-## 5.0 Conclusion
+<h2 id="conclusion"> 5.0 CONCLUSION</h2>
 
 In this audit, I have analyzed the PancakeSwap prediction V2 design and implementation. PancakeSwap Prediction V2 protocol is one of the core functions of PancakeSwap, which is
 designed as a decentralized BNB and CAKE price prediction platform. It allows the user to profit from the BNB, CAKE
