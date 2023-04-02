@@ -123,7 +123,7 @@ _(**Table: 1.6**: PancakeSwap Prediction V2 Audit Scope)_
 - #### AggregatorV3Interface.sol.
   - This is an interface for Chainlink's price feed oracle, which provides real-time price data for various assets.
 
-### <h3 id="review"> 2.0 CONTRACT REVIEW <h3>
+## <h2 id="review"> 2.0 CONTRACT REVIEW <h2>
 
 The following functions are part of the pancakeSwap prediction contract and are all carefully and thoroghly intertwined for optimum performance.
 
