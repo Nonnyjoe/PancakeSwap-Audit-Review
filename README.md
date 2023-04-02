@@ -1,4 +1,4 @@
-![App Screenshot](./images//)
+![App Screenshot](./images/coverPhoto.jpg)
 
 ## Document Properties
 
